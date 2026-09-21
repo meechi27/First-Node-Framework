@@ -7,13 +7,16 @@ function matchRoutes(){
 }
 
 const server = http.createServer((req,res)=>{
-    console.log(req.url);
+
+    // we safely check if not undefined for Node TS
+    if(!req.url){
+        return;
+    }
+    // we create a new object that splits url into path and params and handles edge cases of parsing
+    const url = new URL(req.url , "http://localhost");
     console.log(req.method);
-    
-    res.statusCode = 200;
-    res.setHeader("Content-Type","text/plain");
-    res.write("Hello user!");
-    res.end("Close.");
+    console.log(url.pathname);
+    console.log(url.searchParams);
     
 });
 
