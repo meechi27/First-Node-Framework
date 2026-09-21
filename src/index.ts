@@ -2,7 +2,7 @@ import * as http from 'http';
 
 
 
-function matchRoutes(){
+function matchRoutes(method : string, segment : string[]){
     
 }
 
@@ -22,6 +22,10 @@ const server = http.createServer((req,res)=>{
         res.end("not found!");
         return;
     }
+
+
+    
+    const segments = url.pathname.split("/").filter(x => Boolean(x));
 
 
     console.log(req.method);
