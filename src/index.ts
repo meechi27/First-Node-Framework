@@ -1,8 +1,16 @@
 import * as http from 'http';
 
+type MethodType = "GET" | "POST" | "DELETE" | "PUT";
+
+type RouteType ={
+    method : MethodType;
+    path : string;
+    handler: (req: http.IncomingMessage, res: http.ServerResponse, params: Record<string, string>) => void;
+}
 
 
-function matchRoutes(method : string, segment : string[]){
+
+function matchRoutes(method : MethodType, segment : string[],route : RouteType[]){
     
 }
 
