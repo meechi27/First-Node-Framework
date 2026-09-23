@@ -13,10 +13,11 @@ const routesL : RouteType[] = [
 
 
 function matchRoute(method : MethodType, segment : string[],routes : RouteType[]): MatchRouteReturn | null{
-    let matched = true;
+    
     // loop over routes 
     for(const route of routes){
-
+        if(method !== route.method)continue;
+        let matched = true;
         const params : Record<string,string> = {};
         // segment each route's path 
         const localRoute = route.path.split("/").slice(1);
