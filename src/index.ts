@@ -2,18 +2,20 @@ import * as http from 'http';
 import type { RouteType, MatchRouteReturn } from './types.ts';
 
 
+
+// temporary
+function firstHandler(req: http.IncomingMessage, res: http.ServerResponse, params: Record<string, string>) {
+    console.log(params);
+    res.end(`User handler`);
+}
+
 // Our route table
 const routesL: RouteType[] = [
-    { method: "GET", path: "/users/:id", handler: (req, res, params) => console.log("GET Users handler 1") },
-    { method: "GET", path: "/users", handler: (req, res, params) => console.log("GET Users handler 2") },
-    { method: "POST", path: "/user", handler: (req, res, params) => console.log("POST Users handler 3") }
+    { method: "GET", path: "/users/:id", handler: firstHandler },
+    { method: "GET", path: "/users", handler: (req, res, params) => res.end("Users") },
+    { method: "POST", path: "/user", handler: (req, res, params) => res.end("POST user") }
 ]
 
-
-function isString(method: unknown): method is string {
-
-    return typeof method === 'string';
-}
 
 
 function matchRoute(method: string, segment: string[], routes: RouteType[]): MatchRouteReturn | null {
@@ -65,47 +67,51 @@ function matchRoute(method: string, segment: string[], routes: RouteType[]): Mat
 
 
 const server = http.createServer((req, res) => {
-
-    // we safely check if not undefined for Node TS
-    if (!req.url) {
-        res.statusCode = 400;
-        res.end("bad request");
-        return;
-    }
-    let url: URL;
     try {
-        // we create a new object that splits url into path and params and handles edge cases of parsing
-        url = new URL(req.url, "http://localhost");
-    } catch (err) {
-        res.statusCode = 400;
-        res.end("bad request: invalid url");
-        return;
-    }
-
-    const segments = url.pathname.split("/").filter(x => Boolean(x));
-
-
-    if (isString(req.method)) {
-        const match = matchRoute(req.method, segments, routesL);
-        if (match === null) {
-            res.statusCode = 404;
-            res.end("Not Found");
+        // we safely check if not undefined for Node TS
+        if (!req.url) {
+            res.statusCode = 400;
+            res.end("bad request");
             return;
         }
-        else {
-            console.log(match.params);
-            console.log(match.route.path)
-            console.log(match.route.method)
+        let url: URL;
+
+        // we create a new object that splits url into path and params and handles edge cases of parsing
+        url = new URL(req.url, "http://localhost");
+
+
+        const segments = url.pathname.split("/").filter(x => Boolean(x));
+
+
+        if (typeof req.method === 'string') {
+            const match = matchRoute(req.method, segments, routesL);
+            if (match === null) {
+                res.statusCode = 404;
+                res.end("Not Found");
+                return;
+            }
+            else {
+                match.route.handler(req, res, match.params);
+            }
+
         }
 
+
+
+
+    }
+    catch (err) {
+        console.error("Request failed", {
+            method: req.method,
+            url: req.url,
+            error: err
+        });
+        
+
+          {res.statusCode = 500;
+        res.end("Internal Server Error");}
     }
 
-
-
-
-
-
-    res.end("Under construction !");
 
 });
 
