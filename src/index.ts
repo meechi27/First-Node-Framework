@@ -9,7 +9,10 @@ const routesL : RouteType[] = [
 ]
 
 
-
+function isValidMethod(method : unknown):method is MethodType{
+    if(typeof method !== 'string')return false;
+    return ["PATCH" , "GET" , "POST" , "DELETE" , "PUT"].includes(method);
+}
 
 
 function matchRoute(method : MethodType, segment : string[],routes : RouteType[]): MatchRouteReturn | null{
@@ -58,6 +61,8 @@ function matchRoute(method : MethodType, segment : string[],routes : RouteType[]
 
 }
 
+
+
 const server = http.createServer((req,res)=>{
 
     // we safely check if not undefined for Node TS
@@ -79,6 +84,10 @@ const server = http.createServer((req,res)=>{
     
     const segments = url.pathname.split("/").filter(x => Boolean(x));
 
+    
+     if(isValidMethod(req.method)){
+        const match = matchRoute(req.method, segments, routesL);
+    }
 
     console.log(req.method);
     console.log(url.pathname);
