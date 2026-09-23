@@ -13,7 +13,7 @@ const routesL : RouteType[] = [
 
 
 function matchRoute(method : MethodType, segment : string[],routes : RouteType[]): MatchRouteReturn | null{
-    
+    let matched = true;
     // loop over routes 
     for(const route of routes){
 
@@ -39,13 +39,14 @@ function matchRoute(method : MethodType, segment : string[],routes : RouteType[]
                 else{
                     // see if segement elements has same content
                     if(patternPiece !== actualPiece){
+                        matched = false;
                         break;
                     }
                     
                 }
 
             }
-            return {route,params};
+            if(matched){return {route,params};}
         }
         
     }
