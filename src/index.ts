@@ -1,17 +1,20 @@
 import * as http from 'http';
+import type { MethodType, RouteType,MatchRouteReturn } from './types.js';
 
-type MethodType = "GET" | "POST" | "DELETE" | "PUT";
-
-type RouteType ={
-    method : MethodType;
-    path : string;
-    handler: (req: http.IncomingMessage, res: http.ServerResponse, params: Record<string, string>) => void;
-}
-
+// Our route table
+const routes : RouteType[] = [
+    {method : "GET", path : "/users",handler : GetUsersHandler},
+    {method : "POST", path : "/user",handler : PostUsersHandler}
+]
 
 
-function matchRoutes(method : MethodType, segment : string[],route : RouteType[]){
-    
+
+
+
+function matchRoutes(method : MethodType, segment : string[],route : RouteType[]): MatchRouteReturn | null{
+
+    return null;
+
 }
 
 const server = http.createServer((req,res)=>{
