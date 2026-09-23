@@ -16,6 +16,8 @@ function matchRoute(method : MethodType, segment : string[],routes : RouteType[]
     
     // loop over routes 
     for(const route of routes){
+
+        const params : Record<string,string> = {};
         // segment each route's path 
         const localRoute = route.path.split("/").slice(1);
         // check if routes has same length (if so , they have a big chance to be valid)
@@ -30,19 +32,20 @@ function matchRoute(method : MethodType, segment : string[],routes : RouteType[]
                 // check if it is a param or static
                 // param check
                 if(patternPiece.startsWith(":")){
-
+                    // store as a dictionary (ex: id : 42)
+                    params[patternPiece.slice(1)] = actualPiece;
 
                 }//static check
                 else{
                     // see if segement elements has same content
-                    if(localRoute[i] !== segment[i]){
-                    
-
+                    if(patternPiece !== actualPiece){
+                        break;
                     }
                     
                 }
 
             }
+            return {route,params};
         }
         
     }
