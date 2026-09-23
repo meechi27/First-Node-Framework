@@ -1,17 +1,53 @@
 import * as http from 'http';
-import type { MethodType, RouteType,MatchRouteReturn } from './types.js';
+import type { MethodType, RouteType,MatchRouteReturn } from './types.ts';
 
 // Our route table
-const routes : RouteType[] = [
-    {method : "GET", path : "/users",handler : GetUsersHandler},
-    {method : "POST", path : "/user",handler : PostUsersHandler}
+const routesL : RouteType[] = [
+    {method : "GET", path : "/users/:id",handler : (req,res,params)=>console.log("GET Users handler 1")},
+    {method : "GET", path : "/users",handler : (req,res,params)=>console.log("GET Users handler 2")},
+    {method : "POST", path : "/user",handler : (req,res,params)=>console.log("POST Users handler 3")}
 ]
 
 
 
 
 
-function matchRoutes(method : MethodType, segment : string[],route : RouteType[]): MatchRouteReturn | null{
+function matchRoute(method : MethodType, segment : string[],routes : RouteType[]): MatchRouteReturn | null{
+    
+    // loop over routes 
+    for(const route of routes){
+        // segment each route's path 
+        const localRoute = route.path.split("/").slice(1);
+        // check if routes has same length (if so , they have a big chance to be valid)
+        if(localRoute.length === segment.length){
+             
+            
+            for(let i = 0;i < segment.length;i++){
+                // we used ! because we already checked the length equality at outer scope
+                const patternPiece = localRoute[i]!;
+                const actualPiece = segment[i]!;
+
+                // check if it is a param or static
+                // param check
+                if(patternPiece.startsWith(":")){
+
+
+                }//static check
+                else{
+                    // see if segement elements has same content
+                    if(localRoute[i] !== segment[i]){
+                    
+
+                    }
+                    
+                }
+
+            }
+        }
+        
+    }
+
+
 
     return null;
 
