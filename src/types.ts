@@ -1,8 +1,8 @@
 import * as http from "node:http"
 
-type MethodType = "PATCH" | "GET" | "POST" | "DELETE" | "PUT";
+
 type RouteType ={ 
-    method : MethodType;
+    method : string;
     path : string;
     handler: (req: http.IncomingMessage, res: http.ServerResponse, params: Record<string, string>) => void;
 }
@@ -12,4 +12,4 @@ type MatchRouteReturn = {
 }
 
 
-export type {MethodType,RouteType,MatchRouteReturn};
+export type {RouteType,MatchRouteReturn};
