@@ -106,10 +106,12 @@ const server = http.createServer((req, res) => {
             url: req.url,
             error: err
         });
-        
 
-          {res.statusCode = 500;
-        res.end("Internal Server Error");}
+
+        if (!res.writableEnded) {
+            res.statusCode = 500;
+            res.end("Internal Server Error");
+        }
     }
 
 
