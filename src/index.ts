@@ -64,7 +64,9 @@ function matchRoute(method: string, segment: string[], routes: RouteType[]): Mat
 
 }
 
+function readJsonBody(req : http.IncomingMessage,cb : (error : null ,body? : unknown )=> void){
 
+}
 
 const server = http.createServer((req, res) => {
     try {
