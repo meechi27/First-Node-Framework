@@ -68,7 +68,13 @@ function readJsonBody(req : http.IncomingMessage,cb : (error : null ,body? : unk
     const chunks : Buffer[] = [];
 
     req.on("data",(chunk)=>{
-        chunks.concat(chunk);
+        chunks.push(chunk);
+    })
+
+
+    req.on("end",()=>{
+        const raw = Buffer.concat(chunks);
+        const parsed = JSON.parse(raw.toString("utf-8"));
     })
 
 
