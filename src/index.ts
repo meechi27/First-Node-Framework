@@ -65,6 +65,12 @@ function matchRoute(method: string, segment: string[], routes: RouteType[]): Mat
 }
 
 function readJsonBody(req : http.IncomingMessage,cb : (error : null ,body? : unknown )=> void){
+    const chunks : Buffer[] = [];
+
+    req.on("data",(chunk)=>{
+        chunks.concat(chunk);
+    })
+
 
 }
 
