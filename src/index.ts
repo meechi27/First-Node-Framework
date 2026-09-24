@@ -76,8 +76,9 @@ const server = http.createServer((req, res) => {
         }
         let url: URL;
 
-        // we create a new object that splits url into path and params and handles edge cases of parsing
+        
         url = new URL(req.url, "http://localhost");
+        // IMPLEMENTING BODY RECEIVING MECHANISM 
 
 
         const segments = url.pathname.split("/").filter(x => Boolean(x));
