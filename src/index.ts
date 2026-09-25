@@ -3,6 +3,7 @@ import type { RouteType, MatchRouteReturn } from './types.ts';
 
 
 
+
 // temporary
 function firstHandler(req: http.IncomingMessage, res: http.ServerResponse, params: Record<string, string>) {
     console.log(params);
@@ -13,7 +14,9 @@ function firstHandler(req: http.IncomingMessage, res: http.ServerResponse, param
 const routesL: RouteType[] = [
     { method: "GET", path: "/users/:id", handler: firstHandler },
     { method: "GET", path: "/users", handler: (req, res, params) => res.end("Users") },
-    { method: "POST", path: "/user", handler: (req, res, params) => res.end("POST user") }
+    { method: "POST", path: "/user", handler: (req, res, params) => readJsonBody(req, (error,body)=>{
+        
+        res.end(JSON.stringify(body))})}
 ]
 
 
@@ -75,6 +78,7 @@ function readJsonBody(req : http.IncomingMessage,cb : (error : null ,body? : unk
     req.on("end",()=>{
         const raw = Buffer.concat(chunks);
         const parsed = JSON.parse(raw.toString("utf-8"));
+        cb(null,parsed);
     })
 
 
