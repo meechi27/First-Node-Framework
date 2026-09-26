@@ -86,13 +86,14 @@ function readJsonBody(req : http.IncomingMessage,cb : (error : Error | null ,bod
     req.on("end",()=>{
         const raw = Buffer.concat(chunks);
         const str = raw.toString("utf-8");
+        if(str.length === 0)
+                cb(new Error("Empty Body!"))  
+            
         let parsed : unknown = undefined;
         try{
             parsed = JSON.parse(str);
         }
         catch(err){
-            if(str.length === 0)
-                cb(new Error("Empty Body!"))  
             
                 cb(err as Error)  
             
