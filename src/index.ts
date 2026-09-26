@@ -16,7 +16,22 @@ const routesL: RouteType[] = [
     { method: "GET", path: "/users", handler: (req, res, params) => res.end("Users") },
     { method: "POST", path: "/user", handler: (req, res, params) => readJsonBody(req, (error,body)=>{
         
-        res.end(JSON.stringify(body))})}
+        if(error){
+            console.log(`NAME: ${error.name}`);
+            
+            console.log(`MSG: ${error.message}`);
+            
+            console.log(`CAUSE ${error.cause}`);
+
+            console.log(`Stack:\n ${error.stack}`)
+            
+            res.statusCode = 400;
+            res.end("there's an err");
+            return;
+        }
+        res.end(JSON.stringify(body))})
+        
+        }
 ]
 
 
@@ -67,19 +82,27 @@ function matchRoute(method: string, segment: string[], routes: RouteType[]): Mat
 
 }
 // now we need to implement the readJsonBody call back action 
-function readJsonBody(req : http.IncomingMessage,cb : (error : null ,body? : unknown )=> void){
+function readJsonBody(req : http.IncomingMessage,cb : (error : Error | null ,body? : unknown )=> void){
     const chunks : Buffer[] = [];
 
     req.on("data",(chunk)=>{
         chunks.push(chunk);
-    })
+    });
 
 
     req.on("end",()=>{
         const raw = Buffer.concat(chunks);
-        const parsed = JSON.parse(raw.toString("utf-8"));
+        const str = raw.toString("utf-8");
+        let parsed : unknown = undefined;
+        try{
+            parsed = JSON.parse(str);
+        }
+        catch(err){
+            cb(err as Error);
+            return;
+        }
         cb(null,parsed);
-    })
+    });
 
 
 }
@@ -92,12 +115,9 @@ const server = http.createServer((req, res) => {
             res.end("bad request");
             return;
         }
-        let url: URL;
 
-        
-        url = new URL(req.url, "http://localhost");
-        // IMPLEMENTING BODY RECEIVING MECHANISM 
 
+        let url: URL = new URL(req.url, "http://localhost");
 
         const segments = url.pathname.split("/").filter(x => Boolean(x));
 
