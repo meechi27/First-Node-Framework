@@ -17,6 +17,13 @@ const routesL: RouteType[] = [
     { method: "POST", path: "/user", handler: (req, res, params) => readJsonBody(req,5*1024 ,(error,body)=>{
         
         if(error){
+            // TODO stage 6: size exceeded → 413, not 400
+            if(error.message === "Size limit Exceeded!"){
+                console.log(error)
+                res.statusCode = 413;
+                res.end("Size limit Exceeded!");
+                return;
+            }
             console.log(error)
             res.statusCode = 400;
             res.end("Bad Request");
