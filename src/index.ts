@@ -9,7 +9,11 @@ function firstHandler(req: http.IncomingMessage, res: http.ServerResponse, param
     console.log(params);
     res.end(`User handler`);
 }
-
+// TODO stage 6: tagged errors — stop string-matching on error.message
+// TODO stage 6: req.destroy() on size reject — stop receiving, not just ignoring
+// TODO stage 6: map every failure to its correct status:
+//   413 size / 400 empty / 400 malformed / 415 wrong content-type / 400 bad content-length
+// TODO stage 6: handle client disconnect / stream "error" event
 // Our route table
 const routesL: RouteType[] = [
     { method: "GET", path: "/users/:id", handler: firstHandler },
@@ -17,7 +21,7 @@ const routesL: RouteType[] = [
     { method: "POST", path: "/user", handler: (req, res, params) => readJsonBody(req,5*1024 ,(error,body)=>{
         
         if(error){
-            // TODO stage 6: size exceeded → 413, not 400
+            
             if(error.message === "Size limit Exceeded!"){
                 console.log(error)
                 res.statusCode = 413;
