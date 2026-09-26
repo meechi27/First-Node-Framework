@@ -17,16 +17,9 @@ const routesL: RouteType[] = [
     { method: "POST", path: "/user", handler: (req, res, params) => readJsonBody(req, (error,body)=>{
         
         if(error){
-            console.log(`NAME: ${error.name}`);
-            
-            console.log(`MSG: ${error.message}`);
-            
-            console.log(`CAUSE ${error.cause}`);
-
-            console.log(`Stack:\n ${error.stack}`)
-            
+            console.log(error)
             res.statusCode = 400;
-            res.end("there's an err");
+            res.end("Bad Request");
             return;
         }
         res.end(JSON.stringify(body))})
@@ -98,7 +91,11 @@ function readJsonBody(req : http.IncomingMessage,cb : (error : Error | null ,bod
             parsed = JSON.parse(str);
         }
         catch(err){
-            cb(err as Error);
+            if(str.length === 0)
+                cb(new Error("Empty Body!"))  
+            
+                cb(err as Error)  
+            
             return;
         }
         cb(null,parsed);
