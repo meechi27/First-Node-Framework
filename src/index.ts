@@ -81,6 +81,11 @@ function readJsonBody(req : http.IncomingMessage,maxBytes : number,cb : (error :
 
     req.on("data",(chunk)=>{
         bytes += chunk.length;
+        if(bytes > maxBytes){
+            cb(new Error("Size limit Exceeded!"));
+            return;
+        }
+
         chunks.push(chunk);
     });
 
