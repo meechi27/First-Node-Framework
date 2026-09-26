@@ -77,11 +77,14 @@ function matchRoute(method: string, segment: string[], routes: RouteType[]): Mat
 // now we need to implement the readJsonBody call back action 
 function readJsonBody(req : http.IncomingMessage,maxBytes : number,cb : (error : Error | null ,body? : unknown )=> void){
     const chunks : Buffer[] = [];
-    let bytes = 0
+    let bytes = 0;
+    let isSettled = false ;
 
     req.on("data",(chunk)=>{
+        if(isSettled)return;
         bytes += chunk.length;
         if(bytes > maxBytes){
+            isSettled = true;
             cb(new Error("Size limit Exceeded!"));
             return;
         }
@@ -91,10 +94,13 @@ function readJsonBody(req : http.IncomingMessage,maxBytes : number,cb : (error :
 
 
     req.on("end",()=>{
+        if(!isSettled){
         const raw = Buffer.concat(chunks);
         const str = raw.toString("utf-8");
-        if(str.length === 0)
+        if(str.length === 0){
                 cb(new Error("Empty Body!"))  
+                return;
+        }
             
         let parsed : unknown = undefined;
         try{
@@ -107,6 +113,8 @@ function readJsonBody(req : http.IncomingMessage,maxBytes : number,cb : (error :
             return;
         }
         cb(null,parsed);
+    }
+    
     });
 
 
