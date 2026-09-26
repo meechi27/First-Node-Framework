@@ -77,8 +77,10 @@ function matchRoute(method: string, segment: string[], routes: RouteType[]): Mat
 // now we need to implement the readJsonBody call back action 
 function readJsonBody(req : http.IncomingMessage,maxBytes : number,cb : (error : Error | null ,body? : unknown )=> void){
     const chunks : Buffer[] = [];
+    let bytes = 0
 
     req.on("data",(chunk)=>{
+        bytes += chunk.length;
         chunks.push(chunk);
     });
 
