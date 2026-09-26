@@ -14,7 +14,7 @@ function firstHandler(req: http.IncomingMessage, res: http.ServerResponse, param
 const routesL: RouteType[] = [
     { method: "GET", path: "/users/:id", handler: firstHandler },
     { method: "GET", path: "/users", handler: (req, res, params) => res.end("Users") },
-    { method: "POST", path: "/user", handler: (req, res, params) => readJsonBody(req, (error,body)=>{
+    { method: "POST", path: "/user", handler: (req, res, params) => readJsonBody(req,5*1024 ,(error,body)=>{
         
         if(error){
             console.log(error)
@@ -75,7 +75,7 @@ function matchRoute(method: string, segment: string[], routes: RouteType[]): Mat
 
 }
 // now we need to implement the readJsonBody call back action 
-function readJsonBody(req : http.IncomingMessage,cb : (error : Error | null ,body? : unknown )=> void){
+function readJsonBody(req : http.IncomingMessage,maxBytes : number,cb : (error : Error | null ,body? : unknown )=> void){
     const chunks : Buffer[] = [];
 
     req.on("data",(chunk)=>{
